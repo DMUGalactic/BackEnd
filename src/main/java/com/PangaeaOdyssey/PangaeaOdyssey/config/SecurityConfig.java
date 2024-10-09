@@ -47,6 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico","/index.html","/logout").permitAll()
                         .requestMatchers("/sign-up").permitAll() // 회원가입 접근 가능
                         .requestMatchers("/login", "/oauth2/callback").permitAll() // 리디렉션 URI 허용
+                        .requestMatchers("/jwt-test").hasRole("USER")
+                        .requestMatchers("/admin-jwt-test").hasRole("ADMIN")
                         .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 )
                 .sessionManagement(session -> session
