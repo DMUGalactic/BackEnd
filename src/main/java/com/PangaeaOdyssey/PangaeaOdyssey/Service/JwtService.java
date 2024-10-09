@@ -10,12 +10,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +51,8 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     private final MemberRepository userRepository;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
     /**
      * AccessToken 생성 메소드
      */
@@ -60,10 +65,22 @@ public class JwtService {
                 //클레임으로는 저희는 email 하나만 사용합니다.
                 //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
                 //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
+                .withClaim("category", "access") // 액세스 토큰으로 지정
                 .withClaim(EMAIL_CLAIM, email)
                 .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
     }
-
+    public String getCategory(String token) {
+        try {
+            return JWT.require(Algorithm.HMAC512(secretKey))
+                    .build()
+                    .verify(token)
+                    .getClaim("category")
+                    .asString();
+        } catch (Exception e) {
+            log.error("토큰에서 카테고리 추출 중 오류 발생: {}", e.getMessage());
+            return null;
+        }
+    }
     /**
      * RefreshToken 생성
      * RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
@@ -72,6 +89,7 @@ public class JwtService {
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withClaim("category", "refresh") // 리프레시 토큰으로 지정
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(secretKey));
     }
@@ -169,5 +187,16 @@ public class JwtService {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
+    }
+
+    public void addToBlacklist(String accessToken, long expiration) {
+        // Access Token을 블랙리스트에 추가
+        redisTemplate.opsForValue().set("BL:" + accessToken, "logout", expiration, TimeUnit.MICROSECONDS);
+    }
+
+    public long getExpiration(String token) {
+        // Access Token 만료 시간 계산 로직 (예시)
+        // 실제 구현에서는 JWT 파싱을 통해 만료 시간을 얻어야 합니다.
+        return 3600000; // 1시간 예시
     }
 }

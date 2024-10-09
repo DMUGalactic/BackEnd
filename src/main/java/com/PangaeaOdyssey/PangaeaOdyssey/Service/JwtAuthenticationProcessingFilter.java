@@ -9,12 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final MemberRepository userRepository;
-
+    private final RedisTemplate<String, Object> redisTemplate; // Redis 추가
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
@@ -116,10 +118,17 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
+                .ifPresent(accessToken -> {
+                    // Redis에서 해당 토큰이 로그아웃된 토큰인지 확인
+                    String isLogout = (String) redisTemplate.opsForValue().get(accessToken);
 
+                    // 로그아웃된 토큰이 아닌 경우에만 인증 처리
+                    if (ObjectUtils.isEmpty(isLogout)) {
+                        jwtService.extractEmail(accessToken)
+                                .ifPresent(email -> userRepository.findByEmail(email)
+                                        .ifPresent(this::saveAuthentication));
+                    }
+                });
         filterChain.doFilter(request, response);
     }
 

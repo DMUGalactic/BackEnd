@@ -10,11 +10,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -23,13 +27,18 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
+    @Value("${jwt.refresh.expiration}")
+    private long refreshTokenValidity;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth2 Login 성공!");
 
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            String email = oAuth2User.getEmail();  // 이메일 가져오기
 
             // 사용자의 역할을 GUEST에서 USER로 변경
             memberRepository.findByEmail(oAuth2User.getEmail()).ifPresent(user -> {
@@ -41,6 +50,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             // Access Token 및 Refresh Token 발급
             String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
             String refreshToken = jwtService.createRefreshToken();
+
+            jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
+
+            // 로그인 성공 시 Refresh Token을 Redis에 저장
+            redisTemplate.opsForValue().set("RT:" + email, refreshToken, refreshTokenValidity, TimeUnit.MILLISECONDS);
 
             // 사용자 객체에 리프레시 토큰 저장
             memberRepository.findByEmail(oAuth2User.getEmail()).ifPresent(user -> {

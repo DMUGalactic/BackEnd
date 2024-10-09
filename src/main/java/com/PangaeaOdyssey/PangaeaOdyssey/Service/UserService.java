@@ -7,6 +7,8 @@ import com.PangaeaOdyssey.PangaeaOdyssey.Repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 @Slf4j
@@ -17,6 +19,17 @@ public class UserService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    public void logout(String email) {
+        // 로그아웃 시 Refresh Token 삭제
+        String redisKey = "RT:" + email;
+        if (redisTemplate.hasKey(redisKey)) {
+            redisTemplate.delete(redisKey);
+        }
+    }
 
     public void signUp(UserSignUpDto userSignUpDto) throws Exception {
         if (memberRepository.findByEmail(userSignUpDto.getEmail()).isPresent()) {
