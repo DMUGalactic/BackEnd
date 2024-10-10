@@ -13,4 +13,5 @@ public class HomeController {
     public String homeP() {
         return "home.html";  // home.html 페이지로 이동 (src/main/resources/templates/home.html)
     }
+
 }
