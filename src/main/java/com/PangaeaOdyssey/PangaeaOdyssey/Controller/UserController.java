@@ -32,6 +32,12 @@ public class UserController {
     public String jwtTest() {
         return "jwtTest 요청 성공";
     }
-
-
+    @GetMapping("/admin-jwt-test")
+    public String adminjwtTest() {
+        return "admindjwtTest 요청 성공";
+    }
+    @GetMapping("/api/hello")
+    public String test(){
+        return "Hello, world!";
+    }
 }
