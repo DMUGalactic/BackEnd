@@ -11,6 +11,7 @@ public class HomeController {
     }
     @GetMapping("/home")
     public String homeP() {
+        System.out.println("helloworld");
         return "home.html";  // home.html 페이지로 이동 (src/main/resources/templates/home.html)
     }
 

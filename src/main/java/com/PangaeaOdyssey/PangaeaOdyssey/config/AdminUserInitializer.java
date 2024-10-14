@@ -14,7 +14,6 @@ public class AdminUserInitializer implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
     @Override
     public void run(String... args) throws Exception {
         String adminEmail = "admin@admin.com";
