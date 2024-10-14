@@ -3,7 +3,9 @@ package com.PangaeaOdyssey.PangaeaOdyssey.config;
 import com.PangaeaOdyssey.PangaeaOdyssey.Entity.Member;
 import com.PangaeaOdyssey.PangaeaOdyssey.Enum.Role;
 import com.PangaeaOdyssey.PangaeaOdyssey.Repository.MemberRepository;
+
 import com.PangaeaOdyssey.PangaeaOdyssey.Service.JwtService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ public class AdminUserInitializer implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+  
     @Override
     public void run(String... args) throws Exception {
         String adminEmail = "admin@admin.com";
