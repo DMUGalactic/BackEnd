@@ -1,0 +1,54 @@
+.Guide {
+  background-color: #3c8fff;
+  padding: 20px;
+  color: white;
+}
+
+.download-button-container {
+  text-align: center; /* 버튼을 가운데 정렬 */
+  margin: 20px 0; /* 버튼 위아래 여백 */
+}
+
+.download-button {
+  display: inline-block; /* 블록 요소로 설정 */
+  width: 500px; /* 버튼 너비 설정 */
+  height: 160px; /* 버튼 높이 설정 */
+  background-image: url("../images/DownloadButton.png");
+  background-size: contain; /* 이미지 크기 조정 */
+  background-repeat: no-repeat; /* 반복 방지 */
+  border: none;
+  cursor: pointer; /* 커서 포인터로 변경 */
+  transition: background-color 0.3s; /* 호버 효과를 위한 전환 */
+}
+
+.download-button:hover {
+  background-color: #3c3c3c;
+}
+
+.chart {
+  width: 85%; /* 표 너비를 85%로 설정 */
+  border-collapse: collapse; /* 테두리 겹침 방지 */
+  margin: 0 auto; /* 가운데 정렬 */
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.chart th,
+.chart td {
+  border: 1px solid #ccc;
+  padding: 10px; /* 셀 내부 여백 */
+  text-align: center; /* 가운데 정렬 */
+}
+
+.chart th {
+  background-color: white;
+  border-top: 6px solid #3c8fff;
+  border-bottom: 2px solid #3c8fff;
+  border-left: none;
+  border-right: none;
+}
+
+.chart td {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}

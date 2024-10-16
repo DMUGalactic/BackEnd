@@ -1,0 +1,26 @@
+.video-background {
+  position: relative;
+  overflow: hidden; /* 자식 요소가 부모를 넘어가지 않도록 설정 */
+  height: 100vh; /* 화면 전체 높이로 설정 */
+}
+
+.background-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%; /* 비디오 최소 너비 설정 */
+  min-height: 100%; /* 비디오 최소 높이 설정 */
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%); /* 중앙 정렬 */
+  z-index: -1; /* 비디오를 배경으로 설정 */
+}
+
+.content {
+  position: relative; /* 자식 요소가 비디오 위에 표시되도록 설정 */
+  color: white;
+  text-align: center; /* 가운데 정렬 */
+  z-index: 1; /* 내용이 비디오 위에 표시되도록 설정 */
+  padding: 20px;
+  margin-top: 460px;
+}

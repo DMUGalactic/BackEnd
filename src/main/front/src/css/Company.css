@@ -1,0 +1,76 @@
+.CompanyGuide {
+  padding: 20px;
+  background-color: white;
+}
+
+.DevChart {
+  width: 100%;
+  border-collapse: collapse; /* 경계선이 겹치지 않도록 설정 */
+  margin: 0 auto; /* 수평 가운데 정렬 */
+}
+
+.developer-chart {
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+.webdeveloper-chart {
+  margin-top: 0;
+  margin-bottom: 150px;
+}
+
+.DevChart td,
+.DevChart th {
+  border-bottom: 1px solid #dadae3;
+  padding: 20px;
+  text-align: left;
+  line-height: 3; /* 줄 높이를 추가하여 내용물 간격 조정 */
+  background-color: #000000;
+}
+
+.DevChart th {
+  color: #dadae3;
+}
+
+p {
+  color: #efeff2;
+}
+
+h3 {
+  color: #dadae3;
+}
+
+.DevChart tr:last-child td {
+  border-bottom: none;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center; /* 이미지와 텍스트 수평 정렬 */
+}
+
+.profile-image-name {
+  display: flex;
+  flex-direction: column; /* 이미지와 이름을 수직 정렬 */
+  align-items: center; /* 이미지와 이름을 가운데 정렬 */
+  margin-right: 40px; /* 이미지+이름과 설명 사이 간격 */
+}
+
+.profile-image {
+  width: 150px;
+  height: auto;
+  border: 1px solid #000000;
+  border-radius: 80px;
+  background-color: #dadae3;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; /* 설명을 왼쪽 정렬 */
+}
+
+.profile-info p {
+  margin: 0;
+}

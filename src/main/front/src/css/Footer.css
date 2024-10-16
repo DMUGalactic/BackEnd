@@ -1,0 +1,28 @@
+.footer {
+  background-color: black;
+  color: white;
+  padding: 20px;
+  text-align: center; /* 가운데 정렬 */
+}
+
+.footer-content {
+  max-width: 1200px; /* 최대 너비 */
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+.footer-links {
+  list-style: none; /* 기본 리스트 스타일 제거 */
+  padding: 0;
+  display: flex; /* 가로로 배치 */
+  justify-content: center; /* 가운데 정렬 */
+  gap: 20px; /* 링크 간격 */
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none; /* 기본 링크 스타일 제거 */
+}
+
+.footer-links a:hover {
+  text-decoration: underline; /* 마우스 오버 시 밑줄 추가 */
+}
